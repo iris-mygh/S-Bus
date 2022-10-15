@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">S-BUS</string>
+    <string name="api_url">https://baongo0056.xyz/</string>
 </resources>

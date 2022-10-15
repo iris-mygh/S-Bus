@@ -25,13 +25,21 @@ public class QRActivity extends AppCompatActivity {
 
         qr_camera_bnt = (ImageButton) findViewById(R.id.img_qrcamera);
         iv_qr_img = (ImageView) findViewById(R.id.qr_img);
-        int REQUESt_CODE_CAMERA = 123;
+        //int REQUESt_CODE_CAMERA = 123;
+
+        Intent intent = getIntent();
+        String qrValue = intent.getStringExtra("qrValue");
+        if (qrValue != null && !qrValue.equals("")) {
+            Toast.makeText(QRActivity.this, qrValue, Toast.LENGTH_SHORT).show();
+        }
 
         qr_camera_bnt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUESt_CODE_CAMERA);
+                //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //startActivityForResult(intent, REQUESt_CODE_CAMERA);
+                Intent myIntent = new Intent(QRActivity.this, activity_qrscanner.class);
+                QRActivity.this.startActivity(myIntent);
             }
         });
 
