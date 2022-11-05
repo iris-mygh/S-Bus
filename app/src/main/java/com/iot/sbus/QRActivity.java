@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class QRActivity extends AppCompatActivity {
 
     ImageButton qr_camera_bnt;
@@ -30,14 +33,20 @@ public class QRActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String qrValue = intent.getStringExtra("qrValue");
         if (qrValue != null && !qrValue.equals("")) {
-            Toast.makeText(QRActivity.this, qrValue, Toast.LENGTH_SHORT).show();
+            try {
+                Toast.makeText(QRActivity.this, qrValue, Toast.LENGTH_SHORT).show();
+                JSONObject jsnLocalData = new JSONObject(ApiPrivateFile.GetLocalData(QRActivity.this));
+                jsnLocalData.put("qrvalue", qrValue);
+                ApiPrivateFile.SaveLocalData(QRActivity.this, jsnLocalData.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(new Intent(QRActivity.this, MapActivity.class));
         }
 
         qr_camera_bnt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //startActivityForResult(intent, REQUESt_CODE_CAMERA);
                 Intent myIntent = new Intent(QRActivity.this, activity_qrscanner.class);
                 QRActivity.this.startActivity(myIntent);
             }
