@@ -35,6 +35,11 @@ public class activity_qrscanner extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (!result.getText().split("_")[0].equals("station")) {
+                            Toast.makeText(activity_qrscanner.this, "Không phải QR hợp lệ.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         //Toast.makeText(activity_qrscanner.this, result.getText(), Toast.LENGTH_SHORT).show();
                         Intent myIntent = new Intent(activity_qrscanner.this, QRActivity.class);
                         myIntent.putExtra("qrValue", result.getText());

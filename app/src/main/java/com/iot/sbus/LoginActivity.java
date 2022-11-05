@@ -18,6 +18,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
@@ -50,40 +52,52 @@ public class LoginActivity extends AppCompatActivity {
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (username.getText().toString().equals("0902345678") && password.getText().toString().equals("12345678")) {
+                // https://baongo0056.xyz/?api=login&&phone_number=0967123456&&password=abc123
+                // {"status":"OK","message":"Success","data":[{"id_user":"1","full_name":"Nguyen Van A","user_type":"1","first_char":"A"}]}
+                ApiCaller ac = new ApiCaller(LoginActivity.this,
+                        "login",
+                        "phone_number=" + username.getText() + "&&password=" + password.getText(),
+                        new ApiCaller.funcCallBackCls() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject res = new JSONObject(response);
+                                    JSONArray data = res.getJSONArray("data");
+                                    if (data.length() > 0) {
+                                        //correct: Customer
+                                        if (data.getJSONObject(0).getString("user_type").equals("1")) {
+                                            Toast.makeText(LoginActivity.this, "Đăng nhập hành khách thành công", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(LoginActivity.this,CustomerActivity.class));
+                                        }
+                                        //correct: Driver
+                                        else if (data.getJSONObject(0).getString("user_type").equals("2")) {
+                                            Toast.makeText(LoginActivity.this, "Đăng nhập tài xế thành công", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(LoginActivity.this,DriverActivity.class));
+                                        }
+                                        else {
+                                            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập", Toast.LENGTH_SHORT).show();
+                                        }
 
-                    ApiCaller ac = new ApiCaller(LoginActivity.this,
-                            "test",
-                            "code=1&&code2=1",
-                            new ApiCaller.funcCallBackCls() {
-                                @Override
-                                public void onResponse(String response) {
-                                    // Display the first 500 characters of the response string.
-                                    //textView.setText("Response is: " + response.substring(0,500));
-                                    Toast.makeText(LoginActivity.this, response, Toast.LENGTH_SHORT).show();
+                                        ApiPrivateFile.SaveLocalData(LoginActivity.this, data.getJSONObject(0).toString());
+                                        //Toast.makeText(LoginActivity.this, ApiPrivateFile.GetLocalData(LoginActivity.this), Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại. " + res.getString("message"), Toast.LENGTH_SHORT).show();
+                                    }
 
-                                    //correct: Driver
-                                    //Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(LoginActivity.this,DriverActivity.class));
-
+                                } catch (JSONException e) {
+                                    Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
 
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            }
 
-                    ac.run();
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(LoginActivity.this, "Đăng nhập thất bại. " + error.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
-                } else if (username.getText().toString().equals("0912345678") && password.getText().toString().equals("12345678")) {
-                    //correct: Customer
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công !!!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginActivity.this,CustomerActivity.class));
-                } else {
-                    //incorrect
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thất bại !!!", Toast.LENGTH_SHORT).show();
-                }
+                ac.run();
             }
         });
 
@@ -92,10 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this,ForgotPassActivity.class));
-
             }
-
-
         });
     }
 }
