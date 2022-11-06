@@ -82,7 +82,8 @@ public class MapActivity extends AppCompatActivity {
                                 int intSelectedIndex = 0;
                                 lsStation = new ArrayList<>();
                                 for (int i = 0; i < data.length(); i++) {
-                                    lsStation.add(data.getJSONObject(i).getString("station_name"));
+                                    lsStation.add(data.getJSONObject(i).getString("id_bus_station")
+                                            + " - " + data.getJSONObject(i).getString("station_name"));
                                     if (jsnlocalData.has("qrvalue") && data.getJSONObject(i).getString("id_bus_station").equals(jsnlocalData.getString("qrvalue").split("_")[1])) {
                                         intSelectedIndex = i;
                                     }
@@ -136,7 +137,8 @@ public class MapActivity extends AppCompatActivity {
                             if (data.length() > 0) {
                                 lsBus = new ArrayList<>();
                                 for (int i = 0; i < data.length(); i++) {
-                                    lsBus.add(data.getJSONObject(i).getString("bus_name"));
+                                    lsBus.add(data.getJSONObject(i).getString("id_bus")
+                                            + " - " + data.getJSONObject(i).getString("bus_name"));
                                 }
 
                                 ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>((Context)MapActivity.this, android.R.layout.simple_spinner_item, lsBus.toArray(new String[]{}));
