@@ -27,10 +27,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:text="Điểm bắt đầu:"
         android:textColor="@color/black"
         android:textSize="15dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_end_point"
+        app:layout_constraintEnd_toStartOf="@+id/tv_startpoint_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_numberbus" />
 
@@ -49,52 +53,56 @@
         android:id="@+id/tv_end_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:text="Điểm kết thúc:"
         android:textColor="@color/black"
         android:textSize="15dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/endpoint_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_numberbus" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_start_route" />
+
 
     <TextView
         android:id="@+id/endpoint_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:text="TP. Hồ Chí Minh"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_numberbus" />
-
+        app:layout_constraintStart_toEndOf="@+id/tv_end_point"
+        app:layout_constraintTop_toBottomOf="@+id/tv_startpoint_name" />
 
     <TextView
         android:id="@+id/tv_present_station"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
         android:text="Trạm hiện tại:"
         android:textColor="#1e90ff"
         android:textSize="20dp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tv_presentstation_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_start_route" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_end_point" />
 
     <TextView
         android:id="@+id/tv_presentstation_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:text="Bình Thuận"
         android:textColor="#1e90ff"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/tv_present_station"
-        app:layout_constraintTop_toBottomOf="@+id/tv_startpoint_name" />
+        app:layout_constraintTop_toBottomOf="@+id/endpoint_name" />
 
     <TextView
         android:id="@+id/tv_count_onbus"
@@ -102,8 +110,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Số người trên xe"
         android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/tv_countonbus_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_present_station" />
 
@@ -125,26 +135,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
         android:text="Trạm kế tiếp:"
         android:textColor="#1e90ff"
         android:textSize="20dp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tv_nextstation_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_start_route" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_count_onbus" />
 
     <TextView
         android:id="@+id/tv_nextstation_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="30dp"
         android:text="Bình Dương"
         android:textColor="#1e90ff"
         android:textSize="20dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/tv_present_station"
-        app:layout_constraintTop_toBottomOf="@+id/tv_startpoint_name" />
+        app:layout_constraintStart_toEndOf="@+id/tv_next_station"
+        app:layout_constraintTop_toBottomOf="@+id/tv_countonbus_number" />
 
     <TextView
         android:id="@+id/tv_count_up"
@@ -152,8 +164,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Số người sẽ lên"
         android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/tv_countup_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_next_station" />
 
@@ -176,8 +190,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:text="Số người sẽ xuống"
         android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/tv_countdown_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_count_up" />
 
@@ -198,6 +214,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="176dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="176dp"
         android:layout_marginBottom="50dp"
         android:text="03:20"
@@ -206,33 +223,38 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bn_arrived_station"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_countdown_number" />
 
     <Button
         android:id="@+id/bn_arrived_station"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
         android:backgroundTint="#1e90ff"
         android:text="Tôi đã tới trạm"
         app:layout_constraintBottom_toTopOf="@+id/bn_logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_timer" />
 
     <Button
         android:id="@+id/bn_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="#ff4500"
         android:text="Đăng xuất"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bn_arrived_station" />
 
 
 
