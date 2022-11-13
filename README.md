@@ -10,6 +10,11 @@
 - https://baongo0056.xyz/?api=login&&phone_number=0967123456&&password=abc123
 - {"status":"OK","message":"Success","data":[{"id_user":"1","full_name":"Nguyen Van A","user_type":"1","first_char":"A"}]}
 
+###
+- server: https://free02.123host.vn/phpMyAdmin/index.php
+- - UserName: kshcrpzw_ContentDB
+- - PassWord: kshcrpzw_ContentDB
+
 ### References
 - https://www.figma.com/file/Tgy3rKiodQDkWroqm0NTVI/IoT-Demo?node-id=0%3A1
 - https://docs.google.com/document/d/1854XvHjVWtQjsded-axevqSDcXwS_suB/edit?usp=sharing&ouid=102964277854388739401&rtpof=true&sd=true
