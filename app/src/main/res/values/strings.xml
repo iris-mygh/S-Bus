@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">S-BUS</string>
 <!--    <string name="api_url">http://192.168.0.19/sbus/api/</string>-->
-    <string name="api_url">https://baongo0056.xyz/</string>
+    <string name="api_url">http://baongo0056.xyz/</string>
 </resources>
