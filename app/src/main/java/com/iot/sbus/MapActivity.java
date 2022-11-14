@@ -43,7 +43,6 @@ public class MapActivity extends AppCompatActivity {
         }
 
         InitStationList();
-        InitBusRouteList();
 
         // Verify route bus
         Button verifytrip_btn = (Button) findViewById(R.id.bn_verifytrip);
@@ -58,9 +57,7 @@ public class MapActivity extends AppCompatActivity {
                 }
 
                 ApiPrivateFile.SaveLocalData(MapActivity.this, jsnlocalData.toString());
-                Toast.makeText(MapActivity.this, "Xác nhận chuyến đi thành công", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MapActivity.this, WaitTimeActivity.class));
-
+                checkEndBusDay();
             }
         });
 
@@ -97,6 +94,8 @@ public class MapActivity extends AppCompatActivity {
                                     @Override
                                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                         Toast.makeText(MapActivity.this, "" + lsStation.get(i) + " Selected..", Toast.LENGTH_SHORT).show();
+                                        InitBusRouteList(lsStation.get(i).split(" - ")[0]);
+
                                     }
 
                                     @Override
@@ -122,39 +121,77 @@ public class MapActivity extends AppCompatActivity {
         ac.run();
     }
 
-    private void InitBusRouteList() {
+    private void InitBusRouteList(String strBusStationId) {
         // Get list of bus route
         ApiCaller ac = new ApiCaller(MapActivity.this,
                 "routelist",
+                "id_bus_station=" + strBusStationId,
+                new ApiCaller.funcCallBackCls() {
+                    @Override
+                    public void onResponse(String response) {
+                        //{"status":"OK","message":"Success","data":[{"list_id":"3","list_bus_name":"[70-2] - Hợp tác xã vận tải 19/5"},{"list_id":"4","list_bus_name":"[150] - Hợp tác xã vận tải 19/5"},{"list_id":"1","list_bus_name":"[103] - Công ty Cổ phần Xe khách Sài Gòn"}]}
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray data = res.getJSONArray("data");
+                            lsBus = new ArrayList<>();
+                            if (data.length() > 0) {
+                                for (int i = 0; i < data.length(); i++) {
+                                    lsBus.add(data.getJSONObject(i).getString("list_id")
+                                            + " - " + data.getJSONObject(i).getString("list_bus_name"));
+                                }
+
+                            }
+                            else {
+                                Toast.makeText(MapActivity.this, "Không có dữ liệu trả về. " + res.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+
+                            ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>((Context)MapActivity.this, android.R.layout.simple_spinner_item, lsBus.toArray(new String[]{}));
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spnBusNo.setAdapter(adapter);
+                            spnBusNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Toast.makeText(MapActivity.this, "" + lsBus.get(i) + " Selected..", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                }
+                            });
+
+                        } catch (JSONException e) {
+                            Toast.makeText(MapActivity.this, "Đã có lỗi xảy ra: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MapActivity.this, "Đã có lỗi xảy ra: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        ac.run();
+    }
+
+    private void checkEndBusDay() {
+        // Get list of bus route
+        ApiCaller ac = new ApiCaller(MapActivity.this,
+                "checkEndBusDay",
                 "",
                 new ApiCaller.funcCallBackCls() {
                     @Override
                     public void onResponse(String response) {
-                        //{"status":"OK","message":"Success","data":[{"id_bus":"1","bus_name":"Tuyến [103] - Công ty Cổ phần Xe khách Sài Gòn"},{"id_bus":"1","bus_name":"Tuyến [103] - Hợp tác xã vận tải 19/5"},{"id_bus":"2","bus_name":"Tuyến [55] - Công ty Cổ phần Xe khách Sài Gòn"},{"id_bus":"2","bus_name":"Tuyến [55] - Hợp tác xã vận tải 19/5"},{"id_bus":"3","bus_name":"Tuyến [70-2] - Công ty Cổ phần Xe khách Sài Gòn"},{"id_bus":"3","bus_name":"Tuyến [70-2] - Hợp tác xã vận tải 19/5"},{"id_bus":"4","bus_name":"Tuyến [150] - Công ty Cổ phần Xe khách Sài Gòn"},{"id_bus":"4","bus_name":"Tuyến [150] - Hợp tác xã vận tải 19/5"}]}
+                        //{"status":"OK","message":"Success","data":[{"total_trip":"1"}]}
                         try {
                             JSONObject res = new JSONObject(response);
                             JSONArray data = res.getJSONArray("data");
                             if (data.length() > 0) {
-                                lsBus = new ArrayList<>();
-                                for (int i = 0; i < data.length(); i++) {
-                                    lsBus.add(data.getJSONObject(i).getString("id_bus")
-                                            + " - " + data.getJSONObject(i).getString("bus_name"));
+                                if (data.getJSONObject(0).getString("total_trip").equals("0")) {
+                                    Toast.makeText(MapActivity.this, "Đã hết chuyến " + jsnlocalData.getString("bus"), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MapActivity.this, "Xác nhận chuyến đi thành công", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(MapActivity.this, WaitTimeActivity.class));
                                 }
-
-                                ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>((Context)MapActivity.this, android.R.layout.simple_spinner_item, lsBus.toArray(new String[]{}));
-                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                spnBusNo.setAdapter(adapter);
-                                spnBusNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                    @Override
-                                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                        Toast.makeText(MapActivity.this, "" + lsBus.get(i) + " Selected..", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                                    }
-                                });
                             }
                             else {
                                 Toast.makeText(MapActivity.this, "Không có dữ liệu trả về. " + res.getString("message"), Toast.LENGTH_SHORT).show();
