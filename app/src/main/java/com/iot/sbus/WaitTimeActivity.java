@@ -145,7 +145,8 @@ public class WaitTimeActivity extends AppCompatActivity {
                             JSONArray data = res.getJSONArray("data");
                             if (data.length() > 0) {
                                 Toast.makeText(WaitTimeActivity.this, "Xác nhận thành công. " + res.getString("message"), Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(WaitTimeActivity.this, EndTimeActivity.class));
+                                startActivity(new Intent(WaitTimeActivity.this, CustomerActivity.class));
+
                             }
                             else {
                                 Toast.makeText(WaitTimeActivity.this, "Không có dữ liệu trả về. " + res.getString("message"), Toast.LENGTH_SHORT).show();
