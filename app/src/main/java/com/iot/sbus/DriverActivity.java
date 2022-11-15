@@ -23,6 +23,9 @@ public class DriverActivity extends AppCompatActivity {
     TextView endpoint_name;
     TextView tv_presentstation_name;
     TextView tv_nextstation_name;
+    TextView tv_countup_number;
+    TextView tv_countonbus_number;
+    TextView tv_countdown_number;
     TextView tv_timer;
     int intTktRemainTime;
     Handler intervalTime = new Handler();
@@ -47,7 +50,15 @@ public class DriverActivity extends AppCompatActivity {
         endpoint_name = (TextView) findViewById(R.id.endpoint_name);
         tv_presentstation_name = (TextView) findViewById(R.id.tv_presentstation_name);
         tv_nextstation_name = (TextView) findViewById(R.id.tv_nextstation_name);
+        tv_countup_number = (TextView) findViewById(R.id.tv_countup_number);
+        tv_countonbus_number = (TextView) findViewById(R.id.tv_countonbus_number);
+        tv_countdown_number = (TextView) findViewById(R.id.tv_countdown_number);
+
         tv_timer = (TextView) findViewById(R.id.tv_timer);
+
+        tv_countup_number.setText("0");
+        tv_countonbus_number.setText("Unknow");
+        tv_countdown_number.setText("Unknow");
 
         try {
             InitDriverSchedule();
@@ -105,6 +116,7 @@ public class DriverActivity extends AppCompatActivity {
                             JSONArray data = res.getJSONArray("data");
                             if (data.length() > 0) {
                                 jsnlocalData.put("id_schedule", data.getJSONObject(0).getString("id_schedule"));
+                                jsnlocalData.put("id_bus_station", data.getJSONObject(0).getString("id_bus_station"));
                                 tv_numberbus.setText(data.getJSONObject(0).getString("bus_name"));
                                 tv_startpoint_name.setText(data.getJSONObject(0).getString("main_start"));
                                 endpoint_name.setText(data.getJSONObject(0).getString("main_destination"));
@@ -164,6 +176,38 @@ public class DriverActivity extends AppCompatActivity {
         ac.run();
     }
 
+    private void GetCustomerCount() throws JSONException {
+        // Get list of station
+        ApiCaller ac = new ApiCaller(DriverActivity.this,
+                "getCustomerCount",
+                "id_bus_station=" + jsnlocalData.getString("id_bus_station"),
+                new ApiCaller.funcCallBackCls() {
+                    @Override
+                    public void onResponse(String response) {
+                        //{"status":"OK","message":"Success","data":[{"total_passenger":"0"}]}
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray data = res.getJSONArray("data");
+                            if (data.length() > 0) {
+                                tv_countup_number.setText(data.getJSONObject(0).getString("total_passenger"));
+                            }
+                            else {
+                                Toast.makeText(DriverActivity.this, "Không có dữ liệu trả về. " + res.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException e) {
+                            Toast.makeText(DriverActivity.this, "Đã có lỗi xảy ra: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(DriverActivity.this, "Đã có lỗi xảy ra: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        ac.run();
+    }
+
     private void CountDownTime() {
         intervalTime.removeCallbacksAndMessages(null);
         intervalTime.postDelayed(new Runnable()
@@ -181,6 +225,14 @@ public class DriverActivity extends AppCompatActivity {
                 } else {
 //                    Toast.makeText(DriverActivity.this, "Vui lòng xác nhận tình trạng lên xe. ", Toast.LENGTH_SHORT).show();
 //                    startActivity(new Intent(DriverActivity.this, EndTimeActivity.class));
+                }
+
+                if (String.valueOf(intTktRemainTime % 10).equals(DriverActivity.this.getResources().getString(R.string.interval))) {
+                    try {
+                        GetCustomerCount();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }, 1000);
